@@ -2,6 +2,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
+import MainLayout from '@/Layouts/MainLayout.vue';
 
 const props = defineProps({ enquiry: Object });
 
@@ -18,6 +19,7 @@ function submit() {
 </script>
 
 <template>
+  <MainLayout>
   <div class="p-6 max-w-xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Edit Enquiry</h1>
 
@@ -52,4 +54,5 @@ function submit() {
       </div>
     </form>
   </div>
+  </MainLayout>
 </template>

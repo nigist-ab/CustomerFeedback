@@ -6,6 +6,10 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { Ziggy } from './ziggy';
+import { route } from 'ziggy-js'; // Explicitly import the route function
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+window.route = route; // Make the route function globally available
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

@@ -15,7 +15,7 @@ class EnquiryController extends Controller
      */
     public function index()
     {
-        $enquiries = Enquiry::with(['user', 'assignedAgent'])->latest()->get();
+        $enquiries = Enquiry::with(['user', 'assignedAgent'])->latest()->get(); // Ensure 'assignedAgent' is loaded
         $agents = User::where('role', 'agent')->get(); // Fetch agents for assignment
 
         return Inertia::render('Enquiries/Index', [

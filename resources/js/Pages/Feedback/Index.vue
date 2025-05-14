@@ -1,43 +1,52 @@
 <script setup>
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+
 defineProps({ feedbacks: Array });
 </script>
 
 <template>
-   <MainLayout>
-  <Head title="Feedback List" />
+  <MainLayout>
+    <Head title="Feedback List" />
 
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Feedback List</h1>
-    <Link href="/feedback/create" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">
-      Add Feedback
-    </Link>
+    <div class="p-6">
+      <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Feedback List</h1>
+      <Link
+        href="/feedback/create"
+        class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 inline-block mb-6"
+      >
+        ➕ Add Feedback
+      </Link>
 
-    <table class="w-full border mt-4">
-      <thead>
-        <tr class="bg-gray-100">
-          <th class="p-2 border">User</th>
-          <th class="p-2 border">Product</th>
-          <th class="p-2 border">Survey</th>
-          <th class="p-2 border">Message</th>
-          <th class="p-2 border">Rating</th>
-          <th class="p-2 border">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in feedbacks" :key="item.id">
-          <td class="p-2 border">{{ item.user?.name }}</td>
-          <td class="p-2 border">{{ item.product?.name }}</td>
-          <td class="p-2 border">{{ item.survey?.title || 'N/A' }}</td>
-          <td class="p-2 border">{{ item.message }}</td>
-          <td class="p-2 border">{{ item.rating }}</td>
-          <td class="p-2 border">
-            <Link :href="`/feedback/${item.id}/edit`" class="text-blue-600 mr-2">Edit</Link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</MainLayout>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-for="item in feedbacks"
+          :key="item.id"
+          class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-300"
+        >
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">
+            {{ item.user?.name || 'Anonymous' }}
+          </h2>
+          <p class="text-sm text-gray-500 mb-1">
+            <strong>Product:</strong> {{ item.product?.name || 'N/A' }}
+          </p>
+          <p class="text-sm text-gray-500 mb-1">
+            <strong>Survey:</strong> {{ item.survey?.title || 'N/A' }}
+          </p>
+          <p class="text-sm text-gray-500 mb-3">
+            <strong>Message:</strong> {{ item.message }}
+          </p>
+          <p class="text-sm text-yellow-500 font-bold mb-4">
+            ⭐ Rating: {{ item.rating }}
+          </p>
+          <Link
+            :href="`/feedback/${item.id}/edit`"
+            class="text-blue-500 hover:underline text-sm"
+          >
+            ✏️ Edit Feedback
+          </Link>
+        </div>
+      </div>
+    </div>
+  </MainLayout>
 </template>

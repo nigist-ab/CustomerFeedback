@@ -29,18 +29,14 @@
         Submit
       </button>
     </form>
-    <Link
-      :href="route('enquiries.index')"
-      class="mt-4 inline-block text-blue-500 hover:underline"
-    >
-      Back to Enquiries
-    </Link>
+   <Link href="/enquiries" class="bg-gray-400 text-white px-4 py-2 rounded">Back to Enquiries</Link>
+     
   </div>
 </MainLayout>
 </template>
 
 <script>
-import { Link } from '@inertiajs/inertia-vue3';
+import { Link } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 import MainLayout from '@/Layouts/MainLayout.vue';
 

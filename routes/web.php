@@ -8,6 +8,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyQuestionController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnalyticsController;
+
 
 // Welcome page (public)
 Route::get('/', function () {
@@ -16,6 +19,15 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 })->name('welcome');
+
+// Authentication Routes
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->name('login');
+
+Route::get('/register', function () {
+    return Inertia::render('Auth/Register');
+})->name('register');
 
 // Authenticated Dashboard
 //Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
@@ -46,18 +58,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('feedback', FeedbackController::class);
-});
-
-// Customer: Submit feedback
-Route::middleware(['auth', 'role:customer'])->group(function () {
-    Route::post('/feedback', [FeedbackController::class, 'submitFeedback'])->name('feedback.submit');
+    Route::post('/feedback/submit', [FeedbackController::class, 'submitFeedback'])->name('feedback.submit');
     Route::get('/feedback/own', [FeedbackController::class, 'viewOwnFeedback'])->name('feedback.own');
+// Admin/Agent-style view (now available to all authenticated users)
+    Route::get('/feedback/view-all', [FeedbackController::class, 'viewFeedback'])->name('feedback.view');
 });
 
-// Admin/Agent: View feedback
-Route::middleware(['auth', 'role:admin|agent'])->group(function () {
-    Route::get('/feedback', [FeedbackController::class, 'viewFeedback'])->name('feedback.view');
-});
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('surveys', SurveyController::class);
@@ -71,6 +77,22 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/test-role', function () {
     return 'You have the admin role!';
 })->middleware('role:admin');
+
+//Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
+//Route::middleware('auth')->group(function () {
+  //  Route::resource('users', UserController::class);
+//});
+//Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
+Route::middleware('auth')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
+    Route::post('/users/{user}/revoke-role', [UserController::class, 'revokeRole'])->name('users.revokeRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/api/analytics/metrics', [AnalyticsController::class, 'metrics']);
+    Route::get('/api/analytics/user-growth', [AnalyticsController::class, 'userGrowth']);
+    Route::get('/api/analytics/feedback-trends', [AnalyticsController::class, 'feedbackTrends']);
+});
 
 
 // ✅ Authentication Routes

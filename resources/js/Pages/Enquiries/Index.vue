@@ -11,14 +11,7 @@
       </h1>
 
       <div class="flex justify-end mb-4">
-        <Link
-          :href="route('enquiries.create')"
-          class="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white px-6 py-3 rounded-full shadow-md transition-all duration-300 transform hover:scale-105 font-semibold flex items-center gap-2"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-            <line x1="12" x2="12" y1="5" y2="19"></line>
-            <line x1="5" x2="19" y1="12" y2="12"></line>
-          </svg>
+       <Link href="/enquiries/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
           New Enquiry
         </Link>
       </div>
@@ -64,20 +57,14 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <div class="flex items-center gap-2">
-                  <span v-if="enquiry.assigned_agent" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                    {{ enquiry.assigned_agent.name }}
+                  <span v-if="enquiry.assignedAgent" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                    {{ enquiry.assignedAgent.name }}
                   </span>
                   <span v-else class="text-gray-400 italic">Unassigned</span>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end gap-2">
-                <Link :href="route('enquiries.edit', enquiry.id)" class="text-blue-500 hover:text-blue-700 hover:underline transition-colors flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
-                  Edit
-                </Link>
+               <Link :href="`/enquiries/${enquiry.id}/edit`" class="text-blue-500 mr-4">Edit</Link>
                 <button @click="deleteEnquiry(enquiry.id)" class="text-red-500 hover:text-red-700 hover:underline transition-colors flex items-center gap-1">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
                     <polyline points="3 6 5 6 21 6"></polyline>
