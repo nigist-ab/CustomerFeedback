@@ -1,8 +1,14 @@
 <script setup>
 import MainLayout from '@/Layouts/MainLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps({ feedbacks: Array });
+
+function deleteFeedback(id) {
+  if (confirm('Are you sure you want to delete this feedback?')) {
+    router.delete(`/feedback/${id}`);
+  }
+}
 </script>
 
 <template>
@@ -28,7 +34,7 @@ defineProps({ feedbacks: Array });
             {{ item.user?.name || 'Anonymous' }}
           </h2>
           <p class="text-sm text-gray-500 mb-1">
-            <strong>Product:</strong> {{ item.product?.name || 'N/A' }}
+            <strong>Product:</strong> {{ item.product?.PRODUCTNAME || 'N/A' }}
           </p>
           <p class="text-sm text-gray-500 mb-1">
             <strong>Survey:</strong> {{ item.survey?.title || 'N/A' }}
@@ -39,12 +45,20 @@ defineProps({ feedbacks: Array });
           <p class="text-sm text-yellow-500 font-bold mb-4">
             ⭐ Rating: {{ item.rating }}
           </p>
-          <Link
-            :href="`/feedback/${item.id}/edit`"
-            class="text-blue-500 hover:underline text-sm"
-          >
-            ✏️ Edit Feedback
-          </Link>
+          <div class="flex justify-between items-center">
+            <Link
+              :href="`/feedback/${item.id}/edit`"
+              class="text-blue-500 hover:underline text-sm"
+            >
+              ✏️ Edit Feedback
+            </Link>
+            <button
+              @click="deleteFeedback(item.id)"
+              class="text-red-500 hover:underline text-sm"
+            >
+              🗑️ Delete Feedback
+            </button>
+          </div>
         </div>
       </div>
     </div>

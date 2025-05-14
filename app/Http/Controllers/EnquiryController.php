@@ -15,7 +15,19 @@ class EnquiryController extends Controller
      */
     public function index()
     {
-        $enquiries = Enquiry::with(['user', 'assignedAgent'])->latest()->get(); // Ensure 'assignedAgent' is loaded
+        $user = Auth::user();
+
+        if ($user->role === 'agent') {
+            // Show only enquiries assigned to the logged-in agent
+            $enquiries = Enquiry::with(['user', 'assignedAgent'])
+                ->where('assigned_to', $user->id)
+                ->latest()
+                ->get();
+        } else {
+            // Show all enquiries for other roles
+            $enquiries = Enquiry::with(['user', 'assignedAgent'])->latest()->get();
+        }
+
         $agents = User::where('role', 'agent')->get(); // Fetch agents for assignment
 
         return Inertia::render('Enquiries/Index', [
@@ -66,6 +78,18 @@ class EnquiryController extends Controller
     }
 
     /**
+     * Show the details of the specified enquiry.
+     */
+    public function show(Enquiry $enquiry)
+    {
+        $enquiry->load(['user', 'assignedAgent']); // Load related user and assigned agent
+
+        return Inertia::render('Enquiries/Show', [
+            'enquiry' => $enquiry,
+        ]);
+    }
+
+    /**
      * Update the specified enquiry in storage.
      */
     public function update(Request $request, Enquiry $enquiry)
@@ -93,12 +117,12 @@ class EnquiryController extends Controller
     public function assign(Request $request, Enquiry $enquiry)
     {
         $request->validate([
-            'assigned_to' => 'required|exists:users,id',
+            'assigned_to' => 'required|exists:users,id', // Ensure the selected agent exists
         ]);
 
         $enquiry->update([
             'assigned_to' => $request->assigned_to,
-            'status' => 'in-progress',
+            'status' => 'in-progress', // Update status to "in-progress"
         ]);
 
         return redirect()->route('enquiries.index')->with('success', 'Enquiry assigned successfully.');

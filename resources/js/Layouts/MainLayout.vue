@@ -10,53 +10,68 @@ import { Link } from '@inertiajs/vue3';
       <nav class="flex flex-col space-y-4">
         <Link
           href="/dashboard"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Dashboard
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
         </Link>
         <Link
           href="/users"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Manage Users
+          <i class="fas fa-users"></i>
+          <span>Manage Users</span>
         </Link>
         <Link
           href="/analytics"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Analytics
+          <i class="fas fa-chart-bar"></i>
+          <span>Analytics</span>
         </Link>
         <Link
           href="/enquiries"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Enquiries
+          <i class="fas fa-question-circle"></i>
+          <span>Enquiries</span>
         </Link>
         <Link
           href="/feedback"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Feedback
+          <i class="fas fa-comments"></i>
+          <span>Feedback</span>
         </Link>
         <Link
           href="/surveys"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Surveys
+          <i class="fas fa-poll"></i>
+          <span>Surveys</span>
         </Link>
         <Link
           href="/tickets"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Tickets
+          <i class="fas fa-ticket-alt"></i>
+          <span>Tickets</span>
+        </Link>
+        <Link
+          href="/products"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
+        >
+          <i class="fas fa-box"></i>
+          <span>Products</span>
         </Link>
         <Link
           href="/logout"
           method="post"
           as="button"
-          class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200"
+          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
-          Logout
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
         </Link>
       </nav>
     </aside>

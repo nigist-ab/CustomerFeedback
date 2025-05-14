@@ -6,9 +6,9 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\Survey;
-
 
 class FeedbackController extends Controller
 {
@@ -38,15 +38,18 @@ class FeedbackController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'product_id'=> 'required|exists:products,id',
-            'survey_id'=> 'required|exists:surveys,id',
+            'product_id' => 'required|exists:products,id', // Ensure product_id is validated
+            'survey_id' => 'nullable|exists:surveys,id',
             'message' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
         ]);
 
+        // Debugging: Log the validated data
+        Log::info('Validated Data:', $validated);
+
         Feedback::create([
             'user_id' => Auth::id(),
-            'product_id'=> $validated['product_id'],
+            'product_id' => $validated['product_id'], // Save the product ID
             'survey_id' => $validated['survey_id'],
             'message' => $validated['message'],
             'rating' => $validated['rating'] ?? null,
@@ -58,17 +61,13 @@ class FeedbackController extends Controller
     // 🟢 Show edit form
     public function edit(Feedback $feedback)
     {
-        // Optional: authorize only owner can edit
-        //if ($feedback->user_id !== Auth::id()) {
-          //  abort(403);}
-
-          $products = Product::all();
-          $surveys = Survey::all();
+        $products = Product::all();
+        $surveys = Survey::all();
 
         return Inertia::render('Feedback/Edit', [
             'feedback' => $feedback,
             'products' => $products,
-            'surveys' => $surveys
+            'surveys' => $surveys,
         ]);
     }
 
@@ -105,19 +104,21 @@ class FeedbackController extends Controller
     public function submitFeedback(Request $request)
     {
         $request->validate([
-            'survey_id' => 'required|exists:surveys,id',
+            'product_id' => 'required|exists:products,id', // ✅ add this
+            'survey_id' => 'nullable|exists:surveys,id',
             'message' => 'required|string',
             'rating' => 'nullable|integer|min:1|max:5',
         ]);
 
         Feedback::create([
             'user_id' => Auth::id(),
+            'product_id' => $request->input('product_id'),
             'survey_id' => $request->input('survey_id'),
             'message' => $request->input('message'),
             'rating' => $request->input('rating'),
         ]);
 
-        return response()->json(['message' => 'Feedback submitted successfully.']);
+        return redirect()->route('feedback.index')->with('success', 'Feedback submitted successfully.');
     }
 
     // Admin/Agent: View all feedback
@@ -136,5 +137,13 @@ class FeedbackController extends Controller
         return Inertia::render('Feedback/Own', [
         'feedbacks' => $feedback
     ]);
+    }
+
+    // 🟢 Show individual feedback
+    public function show(Feedback $feedback)
+    {
+        return Inertia::render('Feedback/Show', [
+            'feedback' => $feedback->load(['user', 'survey', 'product']),
+        ]);
     }
 }

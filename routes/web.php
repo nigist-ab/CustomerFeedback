@@ -3,13 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EnquiryController;
-use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\FeedbackController; // Keep this one
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyQuestionController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ProductController;
 
 
 // Welcome page (public)
@@ -48,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/enquiries/{enquiry}/edit', [EnquiryController::class, 'edit'])->name('enquiries.edit');
     Route::put('/enquiries/{enquiry}', [EnquiryController::class, 'update'])->name('enquiries.update');
     Route::delete('/enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
+    Route::post('/enquiries/{enquiry}/assign', [EnquiryController::class, 'assign'])->name('enquiries.assign');
+    Route::get('/enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/enquiries', function () {
@@ -57,10 +60,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('feedback', FeedbackController::class);
+    Route::resource('feedback', FeedbackController::class); // Includes the 'destroy' route
     Route::post('/feedback/submit', [FeedbackController::class, 'submitFeedback'])->name('feedback.submit');
     Route::get('/feedback/own', [FeedbackController::class, 'viewOwnFeedback'])->name('feedback.own');
-// Admin/Agent-style view (now available to all authenticated users)
     Route::get('/feedback/view-all', [FeedbackController::class, 'viewFeedback'])->name('feedback.view');
 });
 
@@ -94,6 +96,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/analytics/feedback-trends', [AnalyticsController::class, 'feedbackTrends']);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('products', ProductController::class)->only(['index', 'create', 'store']);
+});
 
 // ✅ Authentication Routes
 require __DIR__.'/auth.php';

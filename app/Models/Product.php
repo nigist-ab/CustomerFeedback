@@ -10,8 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
+        'PRODUCTNAME', // Keep only the product name
     ];
 
     // A Product has many Feedbacks

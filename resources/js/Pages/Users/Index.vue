@@ -40,7 +40,7 @@
             <tr>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
               <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Roles</th> <!-- Reduced width -->
+              <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Roles</th> <!-- Reduced width -->
               <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th> <!-- Increased width -->
             </tr>
           </thead>
@@ -71,6 +71,26 @@
                 >
                   <span>Edit</span>
                   <i class="fas fa-edit "></i>
+                </button>
+
+                <!-- Assign Role -->
+                <button
+                  @click="openAssignRoleModal(user)"
+                  class="text-green-500 hover:text-green-700 flex items-center space-x-1 text-xs"
+                  title="Assign Role"
+                >
+                  <span>Assign Role</span>
+                  <i class="fas fa-user-plus"></i>
+                </button>
+
+                <!-- Revoke Role -->
+                <button
+                  @click="openRevokeRoleModal(user)"
+                  class="text-red-500 hover:text-red-700 flex items-center space-x-1 text-xs"
+                  title="Revoke Role"
+                >
+                  <span>Revoke Role</span>
+                  <i class="fas fa-user-minus"></i>
                 </button>
 
                 <!-- View User -->
@@ -165,6 +185,54 @@
           </div>
         </div>
       </div>
+
+      <!-- Assign Role Modal -->
+      <div v-if="showAssignRoleModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow-lg w-96">
+          <h2 class="text-xl font-bold mb-4">Assign Role</h2>
+          <div class="mb-4">
+            <label class="block font-semibold mb-1">Role</label>
+            <select v-model="selectedRoleData" class="border px-2 py-1 rounded w-full">
+              <option value="">Select Role</option>
+              <option v-for="role in roles" :key="role" :value="role">{{ role }}</option>
+            </select>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button @click="closeAssignRoleModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+              Cancel
+            </button>
+            <button
+              @click="assignRole"
+              :disabled="!selectedRoleData"
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+            >
+              Assign
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Revoke Role Modal -->
+      <div v-if="showRevokeRoleModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow-lg w-96">
+          <h2 class="text-xl font-bold mb-4">Revoke Role</h2>
+          <div class="mb-4">
+            <label class="block font-semibold mb-1">Role</label>
+            <select v-model="selectedRoleData" class="border px-2 py-1 rounded w-full">
+              <option value="">Select Role</option>
+              <option v-for="role in currentUser.roles" :key="role.name" :value="role.name">{{ role.name }}</option>
+            </select>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button @click="closeRevokeRoleModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+              Cancel
+            </button>
+            <button @click="revokeRole" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+              Revoke
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </MainLayout>
 </template>
@@ -177,7 +245,7 @@ export default {
   props: {
     users: Array,
     roles: Array,
-    selectedRole: String,
+    selectedRole: String, // Prop from the parent
   },
   components: {
     MainLayout,
@@ -194,12 +262,16 @@ export default {
       itemsPerPage: 10,
       showUserModal: false,
       showDetailsModal: false,
+      showAssignRoleModal: false,
+      showRevokeRoleModal: false,
       isEditing: false,
       userForm: {
         name: '',
         email: '',
         role: '',
       },
+      selectedRoleData: '', // Renamed from `selectedRole` to avoid conflict
+      currentUser: null,
       selectedUser: null,
     }
   },
@@ -234,15 +306,53 @@ export default {
     applyFilter() {
       this.currentPage = 1
     },
-    assignRole(userId) {
-      const role = this.selectedRoles[userId]
-      if (!role) return alert('Select a role first.')
-      router.post(route('admin.users.assignRole', userId), { role })
+    openAssignRoleModal(user) {
+      this.currentUser = user
+      this.selectedRoleData = '' // Use renamed property
+      this.showAssignRoleModal = true
     },
-    revokeRole(userId) {
-      const role = this.revokeRoles[userId]
-      if (!role) return alert('Select a role to revoke.')
-      router.post(route('admin.users.revokeRole', userId), { role })
+    closeAssignRoleModal() {
+      this.showAssignRoleModal = false
+    },
+    assignRole() {
+      if (this.selectedRoleData) {
+        this.$inertia.post(`/users/${this.currentUser.id}/assign-role`, { role: this.selectedRoleData })
+          .then(() => {
+            // Reload the page to reflect the changes in the table
+            this.$inertia.reload({ only: ['users'] });
+            this.closeAssignRoleModal();
+            this.selectedRoleData = ''; // Reset the selected role
+          })
+          .catch(error => {
+            console.error('Error assigning role:', error);
+          });
+      } else {
+        console.error('No role selected for assignment.');
+      }
+    },
+    openRevokeRoleModal(user) {
+      this.currentUser = user
+      this.selectedRoleData = '' // Use renamed property
+      this.showRevokeRoleModal = true
+    },
+    closeRevokeRoleModal() {
+      this.showRevokeRoleModal = false
+    },
+    revokeRole() {
+      if (this.selectedRoleData) {
+        this.$inertia.post(`/users/${this.currentUser.id}/revoke-role`, { role: this.selectedRoleData })
+          .then(() => {
+            // Reload the page to reflect the changes in the table
+            this.$inertia.reload({ only: ['users'] });
+            this.closeRevokeRoleModal();
+            this.selectedRoleData = ''; // Reset the selected role
+          })
+          .catch(error => {
+            console.error('Error revoking role:', error);
+          });
+      } else {
+        console.error('No role selected for revocation.');
+      }
     },
     deleteUser(id) {
       if (confirm('Are you sure you want to delete this user?')) {
