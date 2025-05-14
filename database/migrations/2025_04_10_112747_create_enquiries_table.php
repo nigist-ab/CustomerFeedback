@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('enquiries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')  // Foreign key referencing users table
-                ->constrained('users')  // Points to the 'users' table
-                ->onDelete('cascade');  // Delete related enquiry if user is deleted
+            ->constrained('users')  // Points to the 'users' table
+            ->onDelete('cascade');  // Delete related enquiry if user is deleted
             $table->string('subject');  // Subject of the enquiry
             $table->text('message');  // The enquiry message
             $table->enum('status', ['open', 'in-progress', 'resolved'])->default('open');  // Enquiry status

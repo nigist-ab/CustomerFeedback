@@ -16,6 +16,7 @@ class Answer extends Model
     public function response()
     {
         return $this->belongsTo(SurveyResponse::class);
+        
     }
 
     public function question()

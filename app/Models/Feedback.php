@@ -10,7 +10,7 @@ class Feedback extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'survey_id', 'message', 'rating',
+        'user_id', 'survey_id', 'product_id','message', 'rating',
     ];
 
     public function user()
@@ -21,5 +21,9 @@ class Feedback extends Model
     public function survey()
     {
         return $this->belongsTo(Survey::class);
+    }
+    public function product() 
+    {
+        return $this->belongsTo(Product::class); // ➡️ Add this relationship
     }
 }

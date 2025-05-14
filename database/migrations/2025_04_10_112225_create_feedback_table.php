@@ -20,6 +20,7 @@ return new class extends Migration
                 ->nullable()  // Can be null if no survey is linked
                 ->constrained('surveys')
                 ->onDelete('cascade');
+    
             $table->text('message');  // The feedback message
             $table->integer('rating')->nullable();  // Optional rating (e.g., 1-5)
             $table->timestamps();

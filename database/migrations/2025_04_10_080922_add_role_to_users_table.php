@@ -20,7 +20,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations.$table->enum('role', ['admin', 'agent', 'customer'])->default('customer')
      */
     public function down(): void
     {

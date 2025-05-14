@@ -72,8 +72,6 @@ Route::get('/test-role', function () {
     return 'You have the admin role!';
 })->middleware('role:admin');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware('role:admin')->name('admin.dashboard');
+
 // ✅ Authentication Routes
 require __DIR__.'/auth.php';
