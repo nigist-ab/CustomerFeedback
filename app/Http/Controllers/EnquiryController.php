@@ -23,9 +23,15 @@ class EnquiryController extends Controller
                 ->where('assigned_to', $user->id)
                 ->latest()
                 ->get();
-        } else {
-            // Show all enquiries for other roles
+        } elseif ($user->role === 'admin') {
+            // Admin sees all enquiries
             $enquiries = Enquiry::with(['user', 'assignedAgent'])->latest()->get();
+        } else {
+            // Customer sees only their own enquiries
+            $enquiries = Enquiry::with(['user', 'assignedAgent'])
+                ->where('user_id', $user->id)
+                ->latest()
+                ->get();
         }
 
         $agents = User::where('role', 'agent')->get(); // Fetch agents for assignment
@@ -33,6 +39,8 @@ class EnquiryController extends Controller
         return Inertia::render('Enquiries/Index', [
             'enquiries' => $enquiries,
             'agents' => $agents,
+            'isAgent' => $user->role === 'agent', // Pass isAgent to frontend
+            'isAdmin' => $user->role === 'admin', // Pass isAdmin to frontend
         ]);
     }
 
@@ -86,6 +94,7 @@ class EnquiryController extends Controller
 
         return Inertia::render('Enquiries/Show', [
             'enquiry' => $enquiry,
+             'auth' => ['user' => Auth::user()],
         ]);
     }
 
@@ -99,6 +108,7 @@ class EnquiryController extends Controller
             'message' => 'required|string',
             'status' => 'required|in:open,in-progress,resolved',
             'assigned_to' => 'nullable|exists:users,id',
+            'response' => 'nullable|string',
         ]);
 
         $enquiry->update([
@@ -106,6 +116,7 @@ class EnquiryController extends Controller
             'message' => $request->message,
             'status' => $request->status,
             'assigned_to' => $request->assigned_to,
+            'response' => $request->response,
         ]);
 
         return redirect()->route('enquiries.index')->with('success', 'Enquiry updated successfully.');
@@ -126,6 +137,28 @@ class EnquiryController extends Controller
         ]);
 
         return redirect()->route('enquiries.index')->with('success', 'Enquiry assigned successfully.');
+    }
+
+    /**
+     * Store agent's response to an enquiry.
+     */
+    public function respond(Request $request, Enquiry $enquiry)
+    {
+        $request->validate([
+            'response' => 'required|string',
+        ]);
+
+        // Only assigned agent can respond
+        if (Auth::id() !== $enquiry->assigned_to) {
+            abort(403, 'Unauthorized');
+        }
+
+        $enquiry->update([
+            'response' => $request->response,
+            'status' => 'resolved', // Optionally mark as resolved
+        ]);
+
+        return redirect()->route('enquiries.index')->with('success', 'Response submitted.');
     }
 
     /**

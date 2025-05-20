@@ -15,28 +15,42 @@ class FeedbackController extends Controller
     //Show all feedback entries (for the logged-in user)
     public function index()
     {
-        $feedback = Feedback::with(['user', 'survey', 'product'])->latest()->get();
+        $user = Auth::user();
+
+        if ($user->role === 'admin' || $user->role === 'agent') {
+            $feedback = Feedback::with(['user', 'survey', 'product'])->latest()->get();
+        } else {
+            $feedback = Feedback::where('user_id', $user->id)->with(['user', 'survey', 'product'])->latest()->get();
+        }
 
         return Inertia::render('Feedback/Index', [
-            'feedbacks' => $feedback
+            'feedbacks' => $feedback,
+            'userRole' => $user->role, // <-- Pass userRole to the page
         ]);
     }
 
     // 🟢 Show create feedback form
     public function create()
     {
-        $products = product::all();
-        $surveys = survey::all();
+        $user = Auth::user();
+        if ($user->role !== 'customer') {
+            abort(403);
+        }
+        $products = Product::all();
+        $surveys = Survey::all();
         return Inertia::render('Feedback/Create', [
             'products' => $products,
             'surveys' => $surveys 
         ]);
-        
     }
 
     // 🟢 Store new feedback in DB
     public function store(Request $request)
     {
+        $user = Auth::user();
+        if ($user->role !== 'customer') {
+            abort(403);
+        }
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id', // Ensure product_id is validated
             'survey_id' => 'nullable|exists:surveys,id',
@@ -48,7 +62,7 @@ class FeedbackController extends Controller
         Log::info('Validated Data:', $validated);
 
         Feedback::create([
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'product_id' => $validated['product_id'], // Save the product ID
             'survey_id' => $validated['survey_id'],
             'message' => $validated['message'],
@@ -61,6 +75,10 @@ class FeedbackController extends Controller
     // 🟢 Show edit form
     public function edit(Feedback $feedback)
     {
+        $user = Auth::user();
+        if ($user->role !== 'customer' || $feedback->user_id !== $user->id) {
+            abort(403);
+        }
         $products = Product::all();
         $surveys = Survey::all();
 
@@ -74,9 +92,10 @@ class FeedbackController extends Controller
     // 🟢 Update feedback in DB
     public function update(Request $request, Feedback $feedback)
     {
-        //if ($feedback->user_id !== Auth::id()) {
-            //abort(403); }
-
+        $user = Auth::user();
+        if ($user->role !== 'customer' || $feedback->user_id !== $user->id) {
+            abort(403);
+        }
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'survey_id' => 'required|exists:surveys,id',
@@ -92,9 +111,10 @@ class FeedbackController extends Controller
     // 🟢 Delete feedback
     public function destroy(Feedback $feedback)
     {
-        //if ($feedback->user_id !== Auth::id()) {
-            //abort(403);}
-
+        $user = Auth::user();
+        if ($user->role !== 'customer' || $feedback->user_id !== $user->id) {
+            abort(403);
+        }
         $feedback->delete();
 
         return redirect()->route('feedback.index')->with('success', 'Feedback deleted.');

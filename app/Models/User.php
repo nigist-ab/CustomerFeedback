@@ -29,7 +29,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', 
     ]; 
     //protected $guard_name = 'web';  
 
@@ -101,22 +100,5 @@ class User extends Authenticatable
     public function automatedResponses()
     {
         return $this->hasMany(AutomatedResponse::class, 'created_by');
-    }
-    
-    
-    // Optional: helper methods for role
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
-
-    public function isAgent()
-    {
-        return $this->role === 'agent';
-    }
-
-    public function isCustomer()
-    {
-        return $this->role === 'customer';
     }
 }

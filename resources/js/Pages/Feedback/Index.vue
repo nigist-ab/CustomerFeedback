@@ -2,7 +2,7 @@
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
-defineProps({ feedbacks: Array });
+defineProps({ feedbacks: Array, userRole: String }); // Add userRole prop
 
 function deleteFeedback(id) {
   if (confirm('Are you sure you want to delete this feedback?')) {
@@ -18,6 +18,7 @@ function deleteFeedback(id) {
     <div class="p-6">
       <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Feedback List</h1>
       <Link
+        v-if="userRole === 'customer'"
         href="/feedback/create"
         class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 inline-block mb-6"
       >
@@ -47,12 +48,14 @@ function deleteFeedback(id) {
           </p>
           <div class="flex justify-between items-center">
             <Link
+              v-if="userRole === 'customer'"
               :href="`/feedback/${item.id}/edit`"
               class="text-blue-500 hover:underline text-sm"
             >
               ✏️ Edit Feedback
             </Link>
             <button
+              v-if="userRole === 'customer'"
               @click="deleteFeedback(item.id)"
               class="text-red-500 hover:underline text-sm"
             >

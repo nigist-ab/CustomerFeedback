@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class SurveyController extends Controller
 {
@@ -15,10 +17,11 @@ class SurveyController extends Controller
      */
     public function index(): Response
     {
-        $surveys = Survey::where('creator_id', Auth::id())->latest()->get();
+      $surveys = Survey::where('creator_id', Auth::id())->latest()->get();
 
         return Inertia::render('Surveys/Index', [
             'surveys' => $surveys,
+            'user' => Auth::user(), // Add this line
         ]);
     }
 
@@ -46,8 +49,9 @@ class SurveyController extends Controller
         $validated['creator_id'] = Auth::id();
 
         Survey::create($validated);
-
+        
         return redirect()->route('surveys.index')->with('success', 'Survey created successfully.');
+
     }
 
     /**

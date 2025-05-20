@@ -10,7 +10,7 @@ class Enquiry extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'subject', 'message', 'status', 'assigned_to',
+        'user_id', 'subject', 'message', 'status', 'assigned_to', 'response',
     ];
 
     public function user()

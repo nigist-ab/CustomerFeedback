@@ -10,17 +10,18 @@ class Answer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'response_id', 'question_id', 'answer_text',
+        'survey_response_id',
+        'survey_question_id',
+        'value',
     ];
 
     public function response()
     {
-        return $this->belongsTo(SurveyResponse::class);
-        
+        return $this->belongsTo(SurveyResponse::class, 'survey_response_id');
     }
 
     public function question()
     {
-        return $this->belongsTo(SurveyQuestion::class);
+        return $this->belongsTo(SurveyQuestion::class, 'survey_question_id');
     }
 }

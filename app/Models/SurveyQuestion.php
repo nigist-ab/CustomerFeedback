@@ -13,6 +13,9 @@ class SurveyQuestion extends Model
         'survey_id', 'question_text', 'question_type', 'options', 'is_required', 'order',
     ];
 
+    protected $casts = [
+        'options' => 'array',
+    ];
     public function survey()
     {
         return $this->belongsTo(Survey::class);

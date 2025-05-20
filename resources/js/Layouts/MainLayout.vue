@@ -5,8 +5,11 @@ import { Link } from '@inertiajs/vue3';
 <template>
   <div class="flex min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-md p-4">
-      <h1 class="text-2xl font-bold mb-6 text-gray-800">Our System</h1>
+    <aside class="w-64 bg-gradient-to-tr from-blue-50 via-white to-cyan-100">
+      <div class="flex items-center mb-6">
+        <img src="/images/Omishtu.L.jpg" alt="Omishtu Logo" class="w-10 h-10 rounded-xl mr-3 shadow-md" />
+        <span class="text-2xl font-bold text-gray-800">Omishtu</span>
+      </div>
       <nav class="flex flex-col space-y-4">
         <Link
           href="/dashboard"
@@ -51,13 +54,6 @@ import { Link } from '@inertiajs/vue3';
           <span>Surveys</span>
         </Link>
         <Link
-          href="/tickets"
-          class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
-        >
-          <i class="fas fa-ticket-alt"></i>
-          <span>Tickets</span>
-        </Link>
-        <Link
           href="/products"
           class="block px-4 py-1 rounded-lg text-gray-700 hover:bg-gray-200 flex items-center space-x-2"
         >
@@ -79,7 +75,7 @@ import { Link } from '@inertiajs/vue3';
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
       <!-- Header -->
-      <header class="bg-white shadow p-4">
+      <header class="bg-white shadow-md p-4">
         <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
       </header>
 

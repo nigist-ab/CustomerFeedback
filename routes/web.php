@@ -7,6 +7,7 @@ use App\Http\Controllers\FeedbackController; // Keep this one
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyQuestionController;
+use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnalyticsController;
@@ -30,6 +31,12 @@ Route::get('/register', function () {
     return Inertia::render('Auth/Register');
 })->name('register');
 
+// Place this BEFORE any Route::middleware([...]) group!
+Route::get('/surveys/{survey}/fill', [SurveyResponseController::class, 'fill'])->name('surveys.fill');
+ Route::post('/survey-responses', [SurveyResponseController::class, 'store'])->name('survey-responses.store');
+    Route::get('/survey-responses', [SurveyResponseController::class, 'index'])->name('survey-responses.index'); // for Admin/Agent
+    Route::get('/survey-responses/{id}', [SurveyResponseController::class, 'show'])->name('survey-responses.show');
+
 // Authenticated Dashboard
 //Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
   //  return Inertia::render('Dashboard');
@@ -51,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
     Route::post('/enquiries/{enquiry}/assign', [EnquiryController::class, 'assign'])->name('enquiries.assign');
     Route::get('/enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
+    Route::post('/enquiries/{enquiry}/respond', [EnquiryController::class, 'respond'])->name('enquiries.respond');
 });
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/enquiries', function () {
@@ -61,24 +69,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('feedback', FeedbackController::class); // Includes the 'destroy' route
-    Route::post('/feedback/submit', [FeedbackController::class, 'submitFeedback'])->name('feedback.submit');
-    Route::get('/feedback/own', [FeedbackController::class, 'viewOwnFeedback'])->name('feedback.own');
-    Route::get('/feedback/view-all', [FeedbackController::class, 'viewFeedback'])->name('feedback.view');
+    Route::post('/feedback/submit', [FeedbackController::class, 'submitFeedback'])->name('feedback/submit');
+    Route::get('/feedback/own', [FeedbackController::class, 'viewOwnFeedback'])->name('feedback/own');
+    Route::get('/feedback/view-all', [FeedbackController::class, 'viewFeedback'])->name('feedback/view');
 });
 
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('surveys', SurveyController::class);
+
+    // Only this line is needed for all CRUD, including 'edit'
+    Route::resource('surveys.questions', SurveyQuestionController::class);
+    
 });
-Route::middleware(['auth'])->group(function () {
-    Route::resource('surveys.questions', SurveyQuestionController::class)->shallow();
-});
+ 
+
 Route::middleware(['auth'])->group(function () {
     Route::resource('tickets', TicketController::class);
 });
-Route::get('/test-role', function () {
-    return 'You have the admin role!';
-})->middleware('role:admin');
+
 
 //Route::get('/manage-users', [UserController::class, 'index'])->name('manage-users');
 //Route::middleware('auth')->group(function () {
@@ -87,18 +96,30 @@ Route::get('/test-role', function () {
 //Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('users.assignRole');
-    Route::post('/users/{user}/revoke-role', [UserController::class, 'revokeRole'])->name('users.revokeRole');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-    Route::get('/api/analytics/metrics', [AnalyticsController::class, 'metrics']);
-    Route::get('/api/analytics/user-growth', [AnalyticsController::class, 'userGrowth']);
-    Route::get('/api/analytics/feedback-trends', [AnalyticsController::class, 'feedbackTrends']);
+    Route::post('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('users/assignRole');
+    Route::post('/users/{user}/revoke-role', [UserController::class, 'revokeRole'])->name('users/revokeRole');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users/destroy');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics/index');
 });
+
+// Add these API routes for analytics data
+// Route::middleware('auth')->group(function () {
+//     Route::get('/api/analytics/metrics', [AnalyticsController::class, 'metrics']);
+//     Route::get('/api/analytics/user-growth', [AnalyticsController::class, 'userGrowth']);
+//     Route::get('/api/analytics/feedback-trends', [AnalyticsController::class, 'feedbackTrends']);
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store']);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('survey-responses', SurveyResponseController::class)->only(['index', 'show', 'create', 'store']);
+});
+
 // ✅ Authentication Routes
 require __DIR__.'/auth.php';
+
+Route::get('/test-cors', function () {
+    return response()->json(['success' => true]);
+});

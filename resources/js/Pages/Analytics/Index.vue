@@ -4,14 +4,18 @@
       <h1 class="text-3xl font-bold mb-6 text-gray-800">Analytics Dashboard</h1>
 
       <!-- KPI Section -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white shadow rounded-lg p-4">
           <h2 class="text-lg font-semibold text-gray-700">Total Users</h2>
           <p class="text-3xl font-bold text-blue-500">{{ metrics.totalUsers }}</p>
         </div>
         <div class="bg-white shadow rounded-lg p-4">
-          <h2 class="text-lg font-semibold text-gray-700">Active Sessions</h2>
-          <p class="text-3xl font-bold text-green-500">{{ metrics.activeSessions }}</p>
+          <h2 class="text-lg font-semibold text-gray-700">Enquiries Received</h2>
+          <p class="text-3xl font-bold text-green-500">{{ metrics.enquiriesReceived }}</p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-4">
+          <h2 class="text-lg font-semibold text-gray-700">Survey Responses</h2>
+          <p class="text-3xl font-bold text-purple-500">{{ metrics.surveyResponses }}</p>
         </div>
         <div class="bg-white shadow rounded-lg p-4">
           <h2 class="text-lg font-semibold text-gray-700">Feedback Received</h2>
@@ -42,6 +46,28 @@
             class="h-64"
           ></apexchart>
         </div>
+
+        <!-- Enquiries Trends Chart -->
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">Enquiries Trends</h2>
+          <apexchart
+            type="bar"
+            :options="enquiriesChartOptions"
+            :series="enquiriesChartData"
+            class="h-64"
+          ></apexchart>
+        </div>
+
+        <!-- Survey Responses Trends Chart -->
+        <div class="bg-white shadow rounded-lg p-6">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">Survey Responses Trends</h2>
+          <apexchart
+            type="line"
+            :options="surveyResponsesChartOptions"
+            :series="surveyResponsesChartData"
+            class="h-64"
+          ></apexchart>
+        </div>
       </div>
     </div>
   </MainLayout>
@@ -50,82 +76,62 @@
 <script>
 import MainLayout from '@/Layouts/MainLayout.vue';
 import VueApexCharts from 'vue3-apexcharts';
-import axios from 'axios';
 
 export default {
   components: {
     MainLayout,
     apexchart: VueApexCharts,
   },
+  props: {
+    metrics: Object,
+    enquiriesTrends: Object,
+    surveyResponsesTrends: Object,
+    userGrowthTrends: Object,
+    feedbackTrends: Object,
+  },
   data() {
     return {
-      metrics: {
-        totalUsers: 0,
-        activeSessions: 0,
-        feedbackReceived: 0,
-      },
       userGrowthChartOptions: {
-        chart: {
-          id: 'user-growth',
-        },
-        xaxis: {
-          categories: [],
-        },
+        chart: { id: 'user-growth' },
+        xaxis: { categories: this.userGrowthTrends.categories },
       },
       userGrowthChartData: [
         {
           name: 'Users',
-          data: [],
+          data: this.userGrowthTrends.data,
         },
       ],
       feedbackTrendsChartOptions: {
-        chart: {
-          id: 'feedback-trends',
-        },
-        xaxis: {
-          categories: [],
-        },
+        chart: { id: 'feedback-trends' },
+        xaxis: { categories: this.feedbackTrends.categories },
       },
       feedbackTrendsChartData: [
         {
           name: 'Feedback',
-          data: [],
+          data: this.feedbackTrends.data,
+        },
+      ],
+      enquiriesChartOptions: {
+        chart: { id: 'enquiries-trends' },
+        xaxis: { categories: this.enquiriesTrends.categories },
+      },
+      enquiriesChartData: [
+        {
+          name: 'Enquiries',
+          data: this.enquiriesTrends.data,
+        },
+      ],
+      surveyResponsesChartOptions: {
+        chart: { id: 'survey-responses-trends' },
+        xaxis: { categories: this.surveyResponsesTrends.categories },
+      },
+      surveyResponsesChartData: [
+        {
+          name: 'Survey Responses',
+          data: this.surveyResponsesTrends.data,
         },
       ],
     };
-  },
-  mounted() {
-    this.fetchMetrics();
-    this.fetchUserGrowthData();
-    this.fetchFeedbackTrendsData();
-  },
-  methods: {
-    async fetchMetrics() {
-      try {
-        const response = await axios.get('/api/analytics/metrics');
-        this.metrics = response.data;
-      } catch (error) {
-        console.error('Error fetching metrics:', error);
-      }
-    },
-    async fetchUserGrowthData() {
-      try {
-        const response = await axios.get('/api/analytics/user-growth');
-        this.userGrowthChartOptions.xaxis.categories = response.data.categories;
-        this.userGrowthChartData[0].data = response.data.data;
-      } catch (error) {
-        console.error('Error fetching user growth data:', error);
-      }
-    },
-    async fetchFeedbackTrendsData() {
-      try {
-        const response = await axios.get('/api/analytics/feedback-trends');
-        this.feedbackTrendsChartOptions.xaxis.categories = response.data.categories;
-        this.feedbackTrendsChartData[0].data = response.data.data;
-      } catch (error) {
-        console.error('Error fetching feedback trends data:', error);
-      }
-    },
   },
 };
 </script>
