@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
-    <div class="p-6">
-      <h1 class="text-2xl font-bold mb-4">Manage Users</h1>
+    <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
+      <h1 class="text-4xl font-extrabold mb-10 text-blue-800 tracking-tight drop-shadow">Manage Users</h1>
 
       <!-- Add User Button -->
       <div class="mb-4 flex justify-end">
@@ -35,13 +35,13 @@
 
       <!-- User Table -->
       <div class="bg-white shadow rounded-lg overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <table class="min-w-full w-[1200px] max-w-full divide-y divide-gray-200 text-sm">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-              <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Roles</th> <!-- Reduced width -->
-              <th class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th> <!-- Increased width -->
+              <th class="px-8 py-4 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+              <th class="px-8 py-4 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+              <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">Roles</th>
+              <th class="px-10 py-4 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -50,9 +50,9 @@
               :key="user.id"
               class="hover:bg-gray-100 transition-colors"
             >
-              <td class="px-4 py-2">{{ user.name }}</td>
-              <td class="px-4 py-2">{{ user.email }}</td>
-              <td class="px-2 py-2">
+              <td class="px-8 py-4">{{ user.name }}</td>
+              <td class="px-8 py-4">{{ user.email }}</td>
+              <td class="px-6 py-4">
                 <span
                   v-for="role in user.roles"
                   :key="role.name"
@@ -61,7 +61,7 @@
                   {{ role.name }}
                 </span>
               </td>
-              <td class="px-2 py-2 ">
+              <td class="px-10 py-4 ">
                 <div class="flex space-x-4">
                 <!-- Edit User -->
                 <button

@@ -15,8 +15,8 @@ function deleteFeedback(id) {
   <MainLayout>
     <Head title="Feedback List" />
 
-    <div class="p-6">
-      <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Feedback List</h1>
+        <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
+      <h1 class="text-4xl font-extrabold mb-10 text-blue-800 tracking-tight drop-shadow">Feedback List</h1>
       <Link
         v-if="userRole === 'customer'"
         href="/feedback/create"

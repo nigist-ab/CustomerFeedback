@@ -75,10 +75,12 @@ import { Link } from '@inertiajs/vue3';
     <!-- Main Content -->
     <div class="flex-1 flex flex-col">
       <!-- Header -->
-      <header class="bg-white shadow-md p-4">
+      <header class="bg-white shadow-md p-4 flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+        <span class="text-gray-700 font-medium text-base">
+          {{ $page.props.auth?.user?.name }}
+        </span>
       </header>
-
       <!-- Main Content -->
       <main class="flex-1 p-6">
         <slot />

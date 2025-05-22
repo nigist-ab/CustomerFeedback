@@ -1,7 +1,7 @@
 <template>
   <MainLayout>
-    <div class="p-6">
-      <h1 class="text-3xl font-extrabold text-gray-800 mb-6">Enquiries</h1>
+    <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
+      <h1 class="text-4xl font-extrabold mb-10 text-blue-800 tracking-tight drop-shadow">Enquiries</h1>
 
       <!-- Enquiries Button for customers only -->
       <div v-if="!isAgent && !isAdmin" class="mb-4">

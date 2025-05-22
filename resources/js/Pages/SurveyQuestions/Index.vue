@@ -13,33 +13,33 @@ function deleteQuestion(id) {
 
 <template>
   <MainLayout>
-    <div class="p-6">
+    <div class="p-6 bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
       <Head :title="`Questions for ${survey.title}`" />
       <h1 class="text-2xl font-bold mb-6 text-blue-800">Survey Questions for "{{ survey.title }}"</h1>
       <!-- Removed the original Add Question button -->
 
       <div class="overflow-x-auto rounded-2xl shadow-xl border border-gray-100 bg-white">
-        <table class="w-full min-w-[320px] text-sm divide-y divide-gray-100">
+        <table class="w-full min-w-[900px] max-w-full text-sm divide-y divide-gray-100">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
-              <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Question</th>
-              <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Type</th>
-              <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Required</th>
-              <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
+              <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Order</th>
+              <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Question</th>
+              <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Type</th>
+              <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Required</th>
+              <th class="px-10 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
             <tr v-for="question in questions" :key="question.id" class="hover:bg-blue-50 transition-colors">
-              <td class="px-3 py-2 font-semibold text-gray-900">{{ question.order }}</td>
-              <td class="px-3 py-2 text-gray-700">{{ question.question_text }}</td>
-              <td class="px-3 py-2 text-gray-700">{{ question.question_type }}</td>
-              <td class="px-3 py-2">
+              <td class="px-8 py-4 font-semibold text-gray-900">{{ question.order }}</td>
+              <td class="px-8 py-4 text-gray-700">{{ question.question_text }}</td>
+              <td class="px-8 py-4 text-gray-700">{{ question.question_type }}</td>
+              <td class="px-8 py-4">
                 <span :class="[question.is_required ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400', 'px-2 py-0.5 rounded-full text-xs font-semibold border border-gray-200']">
                   {{ question.is_required ? 'Yes' : 'No' }}
                 </span>
               </td>
-              <td class="px-3 py-2 flex gap-2">
+              <td class="px-10 py-4 flex gap-2">
                 <Link
                   :href="route('surveys.questions.edit', [survey.id, question.id])"
                   class="text-yellow-500 hover:text-yellow-700 flex items-center space-x-1 text-xs font-semibold"

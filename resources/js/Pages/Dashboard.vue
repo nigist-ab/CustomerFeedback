@@ -5,26 +5,22 @@ import { Link } from '@inertiajs/vue3';
 
 <template>
   <MainLayout>
-    <!-- Modern Hero Section -->
-    <section class="relative bg-white rounded-3xl shadow-xl mb-12 overflow-hidden flex flex-col items-center justify-center py-16">
-      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none"></div>
-      <div class="relative z-10 flex flex-col items-center">
-        <h1 class="text-5xl font-extrabold text-black drop-shadow-lg mb-4 text-center">
-          Your Communication Hub
-        </h1>
-        <p class="text-xl text-black/90 mb-8 max-w-2xl text-center">
-          Effortlessly manage enquiries, feedback, and surveys. Empower your team and delight your customers.
-        </p>
-        <div class="flex gap-4">
-          <Link href="/enquiries" class="bg-white/80 hover:bg-white text-blue-700 font-bold px-6 py-2 rounded-full shadow transition">
-            Quick Enquiry
-          </Link>
-          <Link href="/feedback" class="bg-white/80 hover:bg-white text-green-700 font-bold px-6 py-2 rounded-full shadow transition">
-            Give Feedback
-          </Link>
-        </div>
+    <!-- Hero Section without card/box styling -->
+    <section class="mb-12 flex flex-col items-center justify-center py-12">
+      <h1 class="text-5xl font-extrabold text-black drop-shadow-lg mb-4 text-center">
+        Your Communication Hub
+      </h1>
+      <p class="text-xl text-black/90 mb-8 max-w-2xl text-center">
+        Manage and track all your activities in one place.
+      </p>
+      <div class="flex gap-4">
+        <Link href="/enquiries" class="bg-white/80 hover:bg-white text-blue-700 font-bold px-6 py-2 rounded-full shadow transition">
+          Quick Enquiry
+        </Link>
+        <Link href="/feedback" class="bg-white/80 hover:bg-white text-green-700 font-bold px-6 py-2 rounded-full shadow transition">
+          Give Feedback
+        </Link>
       </div>
-      <span class="absolute -bottom-8 right-8 w-40 h-40 bg-pink-300 opacity-40 rounded-full blur-2xl animate-pulse"></span>
     </section>
 
     <!-- Feature Cards Grid -->
